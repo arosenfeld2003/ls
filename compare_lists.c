@@ -3,7 +3,7 @@
 */
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <sys/stat.h>
 /*
   a > b ==> 1;
   a < b ==> -1;
@@ -34,6 +34,13 @@ int         compare_strings(char *a, char*b) {
       }
     }
   }
+  return comp;
+}
+
+int           compare_file_size(struct stat *file1, struct stat *file2) {
+  off_t file1_size = file1->st_size;
+  off_t file2_size = file2->st_size;
+  int comp = compare_size(file1_size, file2_size);
   return comp;
 }
 

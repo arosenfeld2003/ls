@@ -94,7 +94,7 @@ t_list          *create_file_list(DIR *dirp, char *filename) {
   a == b ==> 0;
 */
 
-int         compare_size(int a, int b) {
+int         compare_size(long long a, long long b) {
   return a > b ? 1 : (a < b ? -1 : 0);
 }
 
@@ -121,6 +121,13 @@ int         compare_strings(char *a, char*b) {
       }
     }
   }
+  return comp;
+}
+
+int           compare_file_size(struct stat *file1, struct stat *file2) {
+  off_t file1_size = file1->st_size;
+  off_t file2_size = file2->st_size;
+  int comp = compare_size(file1_size, file2_size);
   return comp;
 }
 
@@ -193,7 +200,7 @@ void        merge_sort(t_list **headRef) {
   /* Split head into 'a' and 'b' sublists */
   split_node(head, &a, &b);
 
-  /* Recursively sort the sublists */
+  /* Recursively break down the sublists */
   merge_sort(&a);
   merge_sort(&b);
 

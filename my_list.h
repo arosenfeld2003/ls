@@ -19,8 +19,12 @@
 */
 
 typedef struct List {
-  void *data;
-  struct List *next;
+  void          *data;
+  int           is_hidden;
+  void          *file_size;
+  void          *mod_time;
+  int           is_dir;
+  struct List   *next;
 } t_list;
 
 typedef struct Options {
@@ -37,10 +41,12 @@ typedef struct Options {
 void            destroy_list(t_list **head);
 t_list          *create_list();
 t_list          *create_file_list(DIR *dirp, char *filename);
+t_list          *create_name_only_list(char *filename);
+t_list          *delete_nodes(t_list *curr, char value);
 t_list          *append_to_list(t_list *current_list, t_list *new_node);
 void            split_node(t_list *source, t_list **front, t_list** back);
 t_list          *alpha_sorted_merge(t_list *a, t_list *b);
-void            merge_sort(t_list **headRef);
+void            merge_sort(t_list **headRef, t_opts *opts);
 void            print_list(t_list *head);
 void            destroy_list(t_list **head);
 
@@ -53,5 +59,6 @@ off_t           get_size(struct stat *file_info);
 time_t          get_mod_time(struct stat *file_info);
 struct          tm *format_time(time_t time);
 
-int             compare_size(int a, int b);
+int             compare_size(long long a, long long b);
 int             compare_strings(char *a, char*b);
+

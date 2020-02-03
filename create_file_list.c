@@ -42,7 +42,7 @@ struct tm *format_time(time_t time) {
   return formatted;
 }
 
-void            print_list(t_list *head) {
+void            print_list(t_list *head, t_opts *opts) {
   t_list        *current_node = head;
 
   while (current_node != NULL) {
@@ -92,8 +92,25 @@ t_list          *create_list() {
 **
 */
 
+t_list          *set_is_hidden(t_list *head, char *filename) {
+  if (filename[0] == '.') {
+    head->is_hidden = 1;
+  }
+  return head;
+}
+
+t_list          *create_name_only_list(char *filename) {
+  t_list *head = create_list();
+  head = set_is_hidden(head, filename);
+  void *p;
+  p = filename;
+  head->data = p;
+  return head;
+}
+
 t_list          *create_file_list(DIR *dirp, char *filename) {
   t_list *head = create_list();
+  head = set_is_hidden(head, filename);
   struct dirent *file;
 
   // continually open next directory stream until reaching the end of file list.
@@ -124,12 +141,11 @@ int main(int argc, char **argv) {
   DIR               *dirp = opendir(filename);
 
   if (S_ISREG(file_info->st_mode)) {
-    printf("%s\n", filename);
+    file_list = create_name_only_list(filename);
   } else if (S_ISDIR(file_info->st_mode)) {
     file_list = create_file_list(dirp, filename);
-    print_list(file_list);
   }
-
+  print_list(file_list);
   free(file_info);
   destroy_list(&file_list);
 
@@ -138,12 +154,12 @@ int main(int argc, char **argv) {
 
 // works for when passed a directory!!
 // TODO:
-// 1. if not a directory, make list of only file name.
+// 1. if not a directory, print filename ==> done, 1/31 (NOT A LIST).
 // 2. add necessary stat info to the void pointer data for each list node.
 // 3. SORT LIST FUNCTIONS - OPTIONS ==>
   // sort alphabetically ==> done, 1/30.
   // create a way to accept options.
-  // -a : include/exclude files starting with a "."
+  // -a : include files starting with a "."
   // -t : sort/display time modified.
   // -R : recursively list sub-directories.
   // -z : display number of bytes in each file.
