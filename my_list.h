@@ -56,6 +56,7 @@ void            print_list(t_list *head);
 // void         apply_on_list(t_list *my_list, int(*func)(void *));
 
 t_opts          *init_opts();
+t_opts          get_opts(char *flags, t_opts *opts);
 t_list          *handle_options(t_list *file_list, t_opts *opts);
 
 struct          stat *get_info(char *filename);

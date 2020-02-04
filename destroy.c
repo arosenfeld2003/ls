@@ -2,11 +2,25 @@
 **
 */
 
-#include "./my_list.h"
+#include "my_list.h"
 
 /*
 **
 */
+
+void          destroy_list(t_list **head) {
+  t_list      *current;
+  t_list      *next;
+
+  current = *head;
+  while (current != NULL) {
+    next = current->next;
+    free(current);
+    current = next;
+  }
+  head = NULL;
+}
+
 
 /* delete any nodes whose filenames start with char value */
 t_list *delete_nodes(t_list *curr, char value) {

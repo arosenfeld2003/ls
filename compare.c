@@ -2,7 +2,7 @@
 **
 */
 
-#include "./my_list.h"
+#include "my_list.h"
 
 /*
 **
@@ -11,7 +11,7 @@
 
 /* a > b ==> 1; a < b ==> -1; a == b ==> 0; */
 
-int         compare_size(int a, int b) {
+int         compare_size(long long a, long long b) {
   return a > b ? 1 : (a < b ? -1 : 0);
 }
 
@@ -44,13 +44,3 @@ int           compare_file_size(struct stat *file1, struct stat *file2) {
   int comp = compare_size(file1_size, file2_size);
   return comp;
 }
-
-// int main(int argc, char**argv) {
-//   char *a = argv[1];
-//   char *b = argv[2];
-//   int comp = compare_strings(a, b);
-
-//   printf("%d\n", comp);
-
-//   return comp;
-// }

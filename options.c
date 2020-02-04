@@ -2,7 +2,7 @@
 **
 */
 
-#include "./my_list.h"
+#include "my_list.h"
 
 /*
 **
@@ -64,21 +64,3 @@ t_list        *handle_options(t_list *file_list, t_opts *opts) {
   }
   return file_list;
 }
-
-// testing.
-// int main(int argc, char**argv) {
-//   char *flags = argv[1];
-//   t_opts *opts = init_opts();
-
-//   if (flags[0] == '-') {
-//     flags++;
-//     *opts = get_opts(flags, opts);
-//   }
-
-//   printf("%d\n", opts->include_hidden_files); // -a
-//   printf("%d\n", opts->show_size_in_bytes); // -z
-//   printf("%d\n", opts->list_dirs_recursively); // -R
-//   printf("%d\n", opts->sort_by_time_modified); // -t
-
-//   free(opts);
-// }

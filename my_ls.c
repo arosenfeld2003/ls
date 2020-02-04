@@ -2,7 +2,7 @@
 **
 */
 
-#include "./my_list.h"
+#include "my_list.h"
 
 /*
 **
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
   if (flags[0] == '-') {
     flags++;
-    opts = get_opts(flags, opts);
+    *opts = get_opts(flags, opts);
     filename = argv[2];
   } else {
     filename = argv[1];
