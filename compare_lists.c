@@ -1,14 +1,15 @@
 /*
 **
 */
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/stat.h>
+
+#include "./my_list.h"
+
 /*
-  a > b ==> 1;
-  a < b ==> -1;
-  a == b ==> 0;
+**
 */
+
+
+/* a > b ==> 1; a < b ==> -1; a == b ==> 0; */
 
 int         compare_size(int a, int b) {
   return a > b ? 1 : (a < b ? -1 : 0);
@@ -44,12 +45,12 @@ int           compare_file_size(struct stat *file1, struct stat *file2) {
   return comp;
 }
 
-int main(int argc, char**argv) {
-  char *a = argv[1];
-  char *b = argv[2];
-  int comp = compare_strings(a, b);
+// int main(int argc, char**argv) {
+//   char *a = argv[1];
+//   char *b = argv[2];
+//   int comp = compare_strings(a, b);
 
-  printf("%d\n", comp);
+//   printf("%d\n", comp);
 
-  return comp;
-}
+//   return comp;
+// }

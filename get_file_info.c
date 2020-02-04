@@ -1,17 +1,8 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-
-
 /*
 **
 */
-#include "my_list.h"
+
+#include "./my_list.h"
 
 /*
 **
@@ -46,23 +37,24 @@ int main(int argc, char **argv) {
   struct stat *buf = malloc(sizeof(stat));
   stat(filename, buf);
 
-  printf("%lld\n", get_size(buf));
+  // printf("%lld\n", get_size(buf));
 
-  time_t modtime = get_mod_time(buf);
-  printf("%ld\n", modtime);
+  // time_t modtime = get_mod_time(buf);
+  // printf("%ld\n", modtime);
 
-  struct tm *formatted_time = format_time(modtime);
-  printf("Month: %d\n", formatted_time->tm_mon);
-  printf("Day of month: %d\n", formatted_time->tm_mday);
-  printf("Day of week: %d\n", formatted_time->tm_wday);
-  printf("Year: %d\n", (formatted_time->tm_year) + 1900);
-  printf("Hours: %d\n", formatted_time->tm_hour);
-  printf("Minutes: %d\n", formatted_time->tm_min);
-  printf("Seconds: %d\n", formatted_time->tm_sec);
+  // struct tm *formatted_time = format_time(modtime);
+  // printf("Month: %d\n", formatted_time->tm_mon);
+  // printf("Day of month: %d\n", formatted_time->tm_mday);
+  // printf("Day of week: %d\n", formatted_time->tm_wday);
+  // printf("Year: %d\n", (formatted_time->tm_year) + 1900);
+  // printf("Hours: %d\n", formatted_time->tm_hour);
+  // printf("Minutes: %d\n", formatted_time->tm_min);
+  // printf("Seconds: %d\n", formatted_time->tm_sec);
 
 
 
-  free(formatted_time);
+  // free(formatted_time);
+
   free(buf);
   return 0;
 }

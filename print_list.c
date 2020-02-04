@@ -1,13 +1,7 @@
 /*
 **
 */
-#include <stdlib.h>
-#include <stdio.h>
-
-/*
-**
-*/
-#include "my_list.h"
+#include "./my_list.h"
 
 /*
 **
@@ -23,8 +17,3 @@ void          print_list(t_list *head) {
   }
 }
 
-// void         print_mod_time(char *filename) {
-//   struct stat *info = get_info(filename);
-//   time_t mod_time = get_mod_time(info);
-//   printf("%llu      ", mod_time);
-// }

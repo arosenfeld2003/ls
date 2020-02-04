@@ -57,12 +57,17 @@ int main() {
       my_ls(62252,0x116061dc0) malloc: *** set a breakpoint in malloc_error_break to debug
       Abort trap: 6
      */
-    
+
     // sorting works.
     // segfault when trying to print.
   // -z : display number of bytes in each file.
   // -R : recursively list sub-directories.
 
+/*
+  2/3: TODO
+    - refactor code to include the stat file on each linked list.
+
+*/
 
   /*
 void my_putc(char);
