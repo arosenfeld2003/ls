@@ -18,7 +18,8 @@ void          destroy_list(t_list **head) {
     free(current);
     current = next;
   }
-  head = NULL;
+  // head = NULL;
+  current = NULL;
 }
 
 

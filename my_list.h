@@ -26,10 +26,7 @@
 
 typedef struct List {
   void          *data;
-  int           is_hidden;
-  void          *file_size;
-  void          *mod_time;
-  int           is_dir;
+  struct stat   *file_info;
   struct List   *next;
 } t_list;
 
@@ -43,7 +40,8 @@ typedef struct Options {
 /*
 **
 */
-
+char            *set_filename(int argc, char **args, char *filename);
+t_opts          *pass_in_options(int argc,  char **args, t_opts *opts);
 void            destroy_list(t_list **head);
 t_list          *create_list();
 t_list          *create_file_list(DIR *dirp, char *filename);
@@ -57,6 +55,7 @@ void            print_list(t_list *head);
 
 t_opts          *init_opts();
 t_opts          get_opts(char *flags, t_opts *opts);
+t_opts          *create_opts(char **args, int i);
 t_list          *handle_options(t_list *file_list, t_opts *opts);
 
 struct          stat *get_info(char *filename);

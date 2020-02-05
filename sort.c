@@ -46,7 +46,7 @@ t_list        *alpha_sorted_merge(t_list *a, t_list *b) {
   else if (b == NULL)
     return (a);
 
-  /* cast data from void pointer to an int */
+  /* cast data from void pointer to a char */
   char *filename_a = ((char *) a->data);
   char *filename_b = ((char *) b->data);
 
@@ -76,22 +76,8 @@ t_list        *time_mod_sorted_merge(t_list *a, t_list *b) {
   }
 
   /* get time mod */
-  char *filename_a = ((char *) a->data);
-  struct stat *file_info_a = get_info(filename_a);
-  time_t mod_time_a = get_mod_time(file_info_a);
-  // printf("%ld\n", mod_time_a);
-  void *p = ((void *)mod_time_a);
-  a->mod_time = p;
-  free(file_info_a);
-
-  char *filename_b = ((char *) b->data);
-  struct stat *file_info_b = get_info(filename_b);
-  time_t mod_time_b = get_mod_time(file_info_b);
-  /* ** */
-  // void *p2 = ((void *)mod_time_b);
-  // b->mod_time = p2;
-  /* ** */
-  free(file_info_b);
+  long mod_time_a = a->file_info->st_mtime;
+  long mod_time_b = b->file_info->st_mtime;
 
   /* Pick either a or b, and recur */
   if (compare_size(mod_time_a, mod_time_b) == 1 ||
@@ -122,29 +108,10 @@ void          merge_sort(t_list **headRef, t_opts *opts) {
   merge_sort(&a, opts);
   merge_sort(&b, opts);
 
-  if (opts->sort_by_time_modified == 1) {
+  if (opts && opts->sort_by_time_modified == 1) {
     *headRef = time_mod_sorted_merge(a, b);
   } else {
     /* merge lists sorted alphabetically */
     *headRef = alpha_sorted_merge(a, b);
   }
 }
-
-// testing.
-// int main(int argc, char **argv) {
-//   char          *filename = argv[1];
-//   t_list        *file_list;
-//   DIR           *dirp = opendir(filename);
-
-//   file_list = create_file_list(dirp, filename);
-
-//   // print_list(file_list);
-
-//   merge_sort(&file_list);
-
-//   print_list(file_list);
-
-//   destroy_list(&file_list);
-
-//   return 0;
-// }
