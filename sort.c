@@ -46,7 +46,7 @@ t_list        *alpha_sorted_merge(t_list *a, t_list *b) {
   else if (b == NULL)
     return (a);
 
-  /* cast data from void pointer to a char */
+  /* cast data from void pointer to a char* */
   char *filename_a = ((char *) a->data);
   char *filename_b = ((char *) b->data);
 
@@ -75,21 +75,41 @@ t_list        *time_mod_sorted_merge(t_list *a, t_list *b) {
     return (a);
   }
 
-  /* get time mod */
-  long mod_time_a = a->file_info->st_mtime;
-  long mod_time_b = b->file_info->st_mtime;
-
-  /* Pick either a or b, and recur */
-  if (compare_size(mod_time_a, mod_time_b) == 1 ||
-    compare_size(mod_time_a, mod_time_b) == 0) {
-      result = a;
-      result->next = time_mod_sorted_merge(b, a->next);
-    } else {
+  if (compare_size((long long)a->info->st_mtime, (long long)b->info->st_mtime) == 1 ||
+        compare_size((long long)a->info->st_mtime, (long long)b->info->st_mtime) == 0) {
+    result = a;
+    result->next = time_mod_sorted_merge(b, a->next);
+  } else {
     result = b;
     result->next = time_mod_sorted_merge(b->next, a);
   }
   return (result);
 }
+
+/* merge lists in sorted order based on time modified */
+t_list        *file_size_sorted_merge(t_list *a, t_list *b) {
+  t_list      *result = NULL;
+
+  /* Base cases */
+  if (a == NULL) {
+    return (b);
+  }
+
+  else if (b == NULL) {
+    return (a);
+  }
+
+  if (compare_size((long long)a->info->st_size, (long long)b->info->st_size) == 1 ||
+        compare_size((long long)a->info->st_size, (long long)b->info->st_size) == 0) {
+    result = a;
+    result->next = file_size_sorted_merge(b, a->next);
+  } else {
+    result = b;
+    result->next = file_size_sorted_merge(b->next, a);
+  }
+  return (result);
+}
+
 
 void          merge_sort(t_list **headRef, t_opts *opts) {
   t_list      *head = *headRef;
