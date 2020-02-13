@@ -24,11 +24,6 @@ struct tm *format_time(time_t time) {
 char *get_full_pathname(char *path, char *filename) {
 
   /* skip pathnames of the current and parent directories */
-
-  // if((strlen(path) < 3) && path[0] == '.') {
-  //   return filename;
-  // }
-
   if (strcmp(path, filename) == 0) {
     return filename;
   }
@@ -40,12 +35,8 @@ char *get_full_pathname(char *path, char *filename) {
   /* handle case of parent directory ==> " ../ " */
   if (strcmp(path, "../") == 0) {
     sprintf(fullpath, "%s%s", path, filename);
-    // strcat(fullpath, dir_name);
   } else {
     sprintf(fullpath, "%s/%s", path, filename);
-    // char *sep = "/";
-    // strcat(fullpath, sep);
-    // strcat(fullpath, dir_name);
   }
   return fullpath;
 }

@@ -15,6 +15,8 @@ bool            can_recurse_dir(char *curr) {
 }
 
 void            recurse(t_list *recursive_list, t_opts *opts) {
+  /* TODO: ignore hidden directories unless option -a */
+
   char           *path = recursive_list->full_pathname;
   DIR            *directory = opendir(path);
   struct dirent  *buf_spec;
