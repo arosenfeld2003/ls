@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <time.h>
+#include <stdbool.h>
 
 /*
 **
@@ -26,7 +27,9 @@
 */
 
 typedef struct List {
-  void            *data;
+  char            *filename;
+  char            *full_pathname;
+  struct dirent   *file_spec;
   struct stat     *info;
   int             is_dir;
   struct List     *next;
@@ -42,11 +45,11 @@ typedef struct Options {
 /*
 **
 */
-char            *set_filename(int argc, char **args, char *filename);
+char            **set_filenames(int argc, char **args);
 t_opts          *pass_in_options(int argc,  char **args, t_opts *opts);
 void            destroy_list(t_list **head);
 t_list          *create_list();
-t_list          *add_node(t_list *head, char *filename);
+t_list          *create_new_node(t_list *head, char *filename, char *full_pathname);
 t_list          *read_directory(t_list *head, t_opts *opts);
 t_list          *delete_nodes(t_list *curr, char value);
 t_list          *append_to_list(t_list *current_list, t_list *new_node);
@@ -58,8 +61,6 @@ t_opts          get_opts(char *flags, t_opts *opts);
 t_opts          *create_opts(char **args, int i);
 t_list          *sort_with_options(t_list *file_list, t_opts *opts);
 
-int             get_info(char *filename, struct stat *buf);
-int             is_directory(char *path);
 off_t           get_size(struct stat *file_info);
 time_t          get_mod_time(struct stat *file_info);
 struct          tm *format_time(time_t time);
@@ -70,6 +71,8 @@ void            merge_sort(t_list **headRef, t_opts *opts);
 int             compare_size(long long a, long long b);
 int             compare_strings(char *a, char*b);
 
-t_list          *make_list(t_list *file_list, char *filename, t_opts *opts);
+char            *get_full_pathname(char *path, char *filename);
+bool            can_recurse_dir(char* curr);
+void            recurse(t_list *file_list, t_opts *opts);
 void            my_ls(int argc, char **args);
 

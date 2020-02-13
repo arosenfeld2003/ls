@@ -16,8 +16,7 @@ char* formatdate(char* str, time_t val) {
 void          print_list(t_list *head, t_opts *opts) {
   t_list *current_node = head;
   while (current_node != NULL) {
-    char *filename = ((char *) current_node->data); // cast the data to a string.
-    printf("%s", filename);
+    printf("%s", current_node->filename);
 
     if (opts->sort_by_time_modified) {
       char *buf;

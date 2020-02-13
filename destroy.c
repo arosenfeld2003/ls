@@ -15,7 +15,8 @@ void            destroy_list(t_list **head) {
   current = *head;
   while (current != NULL) {
     next = current->next;
-    // free(current->info);
+    free(current->file_spec);
+    free(current->info);
     free(current);
     current = next;
   }
@@ -29,7 +30,7 @@ t_list *delete_nodes(t_list *curr, char value) {
   next = curr->next;
 
   /* See if we are at end of list. */
-  if (curr->data == NULL) {
+  if (curr->filename == NULL) {
     return NULL;
   }
 
@@ -38,11 +39,13 @@ t_list *delete_nodes(t_list *curr, char value) {
     return curr;
   }
 
-  /* Check to see if current node is one to be deleted. */
-  char *filename = ((char *) curr->data);
+  /* Check to see if current node is one to be deleted. */;
+  char *filename = curr->filename;
   if (filename[0] == value) {
 
     /* Deallocate the node. */
+    // free(curr->full_pathname);
+    free(curr->info);
     free(curr);
 
     /* recursive call: continue checking list after deleted element */

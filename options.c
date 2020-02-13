@@ -49,6 +49,8 @@ t_opts            get_opts(char *flags, t_opts *opts) {
       case 't':
         opts->sort_by_time_modified = 1;
         break;
+      default:
+        printf("option %c invalid\n", flags[i]);
     }
     i++;
   }
@@ -64,6 +66,7 @@ t_list          *sort_with_options(t_list *file_list, t_opts *opts) {
     char dot = '.';
     file_list = delete_nodes(file_list, dot);
   }
+  
   /* handle other options */
   merge_sort(&file_list, opts);
   return file_list;

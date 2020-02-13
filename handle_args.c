@@ -8,13 +8,28 @@
 **
 */
 
-char            *set_filename(int argc, char **args, char *filename) {
-  if (argc == 1 || args[1][0] == '-') {
-    filename = ".";
-  } else {
-    filename = args[1];
+char            **set_filenames(int argc, char **args) {
+  char **filenames = malloc(sizeof(char *) * argc);
+
+  if ((argc == 1) || (argc == 2 && args[1][0] == '-')) {
+    filenames[0] = ".";
+  } else if (argc > 1) {
+    int i = 0;
+    int j;
+    switch(args[1][0]) {
+      case '-':
+        j = 2;
+        break;
+      default:
+        j = 1;
+    }
+    while (j <= argc) {
+      filenames[i] = args[j];
+      i++;
+      j++;
+    }
   }
-  return filename;
+  return filenames;
 }
 
 t_opts          *pass_in_options(int argc, char **args, t_opts *opts) {

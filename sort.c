@@ -8,7 +8,6 @@
 **
 */
 
-
 /*
   Split nodes of given list into front and back halves, and return the two lists.
   If source length is odd, the extra node goes in the front list.
@@ -46,13 +45,9 @@ t_list        *alpha_sorted_merge(t_list *a, t_list *b) {
   else if (b == NULL)
     return (a);
 
-  /* cast data from void pointer to a char* */
-  char *filename_a = ((char *) a->data);
-  char *filename_b = ((char *) b->data);
-
   /* Pick either a or b, and recur */
-  if (compare_strings(filename_a, filename_b) == 1 ||
-    compare_strings(filename_a, filename_b) == 0) {
+  if (compare_strings(a->filename, b->filename) == 1 ||
+    compare_strings(a->filename, b->filename) == 0) {
       result = b;
       result->next = alpha_sorted_merge(a, b->next);
     } else {
@@ -116,7 +111,7 @@ void          merge_sort(t_list **headRef, t_opts *opts) {
   t_list      *a;
   t_list      *b;
 
-  /* Base case -- length 0 or 1 */
+  /* Base case -- length 0 */
   if ((head == NULL) || (head->next == NULL)) {
     return;
   }
