@@ -38,10 +38,9 @@ t_list          *create_new_node(t_list *head, char *filename, char *full_pathna
   return head;
 }
 
-t_list           *read_directory(t_list *head, t_opts *opts) {
+t_list           *read_directory(t_list *head /* t_opts *opts */) {
   char           *pathname = head->full_pathname;
   DIR            *directory = opendir(pathname);
-
 
   if (directory == NULL) {
     return head;

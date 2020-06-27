@@ -22,7 +22,7 @@ t_opts              *init_opts() {
 
 t_opts              *create_opts(char **args, int i) {
   char              *flags = args[i];
-  char              *filename;
+  // char              *filename;
   t_opts            *opts = init_opts();
 
   if (flags[0] == '-') {
@@ -34,7 +34,7 @@ t_opts              *create_opts(char **args, int i) {
 }
 
 t_opts            get_opts(char *flags, t_opts *opts) {
-  int i;
+  int i = 0;
   while (flags[i]) {
     switch(flags[i]) {
       case 'a':
@@ -66,7 +66,7 @@ t_list          *sort_with_options(t_list *file_list, t_opts *opts) {
     char dot = '.';
     file_list = delete_nodes(file_list, dot);
   }
-  
+
   /* handle other options */
   merge_sort(&file_list, opts);
   return file_list;

@@ -15,7 +15,7 @@ void            destroy_list(t_list **head) {
   current = *head;
   while (current != NULL) {
     next = current->next;
-    free(current->file_spec);
+    /*  free(current->file_spec); */
     free(current->info);
     free(current);
     current = next;
@@ -23,41 +23,42 @@ void            destroy_list(t_list **head) {
   head = NULL;
 }
 
+t_list *delete_first_node(t_list *head) {
+  t_list *temp = head;
+  head = head->next;
+  free(temp);
+  return head;
+}
+
 
 /* delete any nodes whose filenames start with char value */
-t_list *delete_nodes(t_list *curr, char value) {
-  t_list          *next;
-  next = curr->next;
+t_list *delete_nodes(t_list *file_list, char value) {
+  t_list *current = file_list;
+  t_list *previous = NULL;
+  t_list *next = current->next;
+  char *name;
 
-  /* See if we are at end of list. */
-  if (curr->filename == NULL) {
-    return NULL;
+  while (current->next != NULL) {
+    name = current->filename;
+    if (name[0] == value) {
+      if (previous == NULL) {
+        // delete current - first node of list.
+        file_list = delete_first_node(current);
+        current = file_list;
+      } else {
+        // delete current - a node somewhere in the list.
+        previous->next = next;
+        t_list *temp = current;
+        current = next;
+        next = next->next;
+        free(temp);
+      }
+    } else {
+      // no match: traverse the list.
+      previous = current;
+      current = current->next;
+      next = next->next;
+    }
   }
-
-  /* see if the next node is empty */
-  if (next == NULL) {
-    return curr;
-  }
-
-  /* Check to see if current node is one to be deleted. */;
-  char *filename = curr->filename;
-  if (filename[0] == value) {
-
-    /* Deallocate the node. */
-    // free(curr->full_pathname);
-    free(curr->info);
-    free(curr);
-
-    /* recursive call: continue checking list after deleted element */
-    return delete_nodes(next, value);
-  }
-
-  /* recursive call: continue checking list after retained element */
-  curr->next = delete_nodes(curr->next, value);
-
-  /*
-    Return the pointer to where we were called from.
-    Since we did not remove this node it will be the same.
-  */
-  return curr;
+  return file_list;
 }

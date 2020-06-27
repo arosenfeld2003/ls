@@ -29,7 +29,6 @@
 typedef struct List {
   char            *filename;
   char            *full_pathname;
-  struct dirent   *file_spec;
   struct stat     *info;
   int             is_dir;
   struct List     *next;
@@ -50,7 +49,7 @@ t_opts          *pass_in_options(int argc,  char **args, t_opts *opts);
 void            destroy_list(t_list **head);
 t_list          *create_list();
 t_list          *create_new_node(t_list *head, char *filename, char *full_pathname);
-t_list          *read_directory(t_list *head, t_opts *opts);
+t_list          *read_directory(t_list *head /* t_opts *opts */);
 t_list          *delete_nodes(t_list *curr, char value);
 t_list          *append_to_list(t_list *current_list, t_list *new_node);
 

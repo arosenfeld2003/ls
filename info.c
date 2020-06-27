@@ -20,7 +20,10 @@ struct tm *format_time(time_t time) {
   return formatted;
 }
 
-/* malloc - free'd in destroy-node method */
+/*
+  Malloc - free'd in destroy-node method.
+  This works on Mac filesystems (foward slashes separate directories).
+*/
 char *get_full_pathname(char *path, char *filename) {
 
   /* skip pathnames of the current and parent directories */

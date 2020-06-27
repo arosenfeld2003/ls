@@ -23,7 +23,7 @@ void           my_ls(int argc, char **argv) {
 
     file_list->next = NULL;
     opts = pass_in_options(argc, argv, opts);
-    file_list = read_directory(file_list, opts);
+    file_list = read_directory(file_list /* opts */);
     file_list = sort_with_options(file_list, opts);
 
     print_list(file_list, opts);
