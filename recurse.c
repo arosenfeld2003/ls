@@ -7,7 +7,7 @@
 **
 */
 
-bool            can_recurse_dir(char *curr) {
+bool can_recurse_dir(char *curr) {
   if (!strcmp(".", curr) || !strcmp("..", curr)) {
     return false;
   }

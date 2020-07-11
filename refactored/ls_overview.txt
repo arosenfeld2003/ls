@@ -1,0 +1,32 @@
+7.7
+
+1. set_filenames works if there are filenames.
+  - SOLUTION: Fixed - now works with no filenames (default ".").
+2. set_opts: works when options are present
+  - AddressSanitizer error when no options.
+  - SOLUTION: only run set_opts if there are options.
+
+TODO
+3. build file list:
+  - man ls
+    If no operands are given, the contents of the current directory are
+    displayed.  If more than one operand is given, non-directory oper-
+    ands are displayed first; directory and non-directory operands are
+    sorted separately and in lexicographical order.
+
+7.8: TODO
+  1. Build File List.
+  2. Set Options.
+  3. Print list...
+    - if option -a, -z, -t...
+      - show hidden files, size in bytes, time modified (respectively)
+    - if option -R
+      - recurse into any directories encountered and repeat process.
+  4. Delete list.
+
+7.9: TODO
+  1. Makefile --> built... needs test!
+  2. Write method: add_dir_files_to_list (build_file_list.c)
+    - should (PRINT?) all files in each directory encountered.
+    - recurse for a directory is within a directory.
+  3. TEST!  Print list? Etc.
