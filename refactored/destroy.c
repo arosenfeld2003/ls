@@ -20,10 +20,3 @@ void destroy_list(t_list **head) {
   }
   head = NULL;
 }
-
-t_list *delete_first_node(t_list *head) {
-  t_list *temp = head;
-  head = head->next;
-  free_node(temp);
-  return head;
-}

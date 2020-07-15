@@ -33,10 +33,3 @@ t_list *node_copy(t_list *original) {
   new->next = NULL;
   return new;
 }
-
-/* convert struct time_t to struct tm ==> gives access to local time */
-struct tm *format_time(time_t time) {
-  struct tm *formatted = malloc(sizeof(struct tm));
-  localtime_r(&time, formatted); /* method from lib time.h */
-  return formatted;
-}

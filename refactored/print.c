@@ -1,10 +1,5 @@
 #include "my_list.h"
 
-char *formatdate(char *str, time_t val) {
-  strftime(str, 36, "%d.%m.%Y %H:%M:%S", localtime(&val));
-  return str;
-}
-
 /* changes head of list: skips nodes '.' and '../' */
 t_list *skip_hidden_files(t_list *file_list, t_opts *opts) {
   /* handle -a option */

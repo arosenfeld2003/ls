@@ -28,13 +28,6 @@ int compare_strings(char *a, char *b) {
   return comp;
 }
 
-int compare_file_size(struct stat *file1, struct stat *file2) {
-  off_t file1_size = file1->st_size;
-  off_t file2_size = file2->st_size;
-  int comp = compare_size(file1_size, file2_size);
-  return comp;
-}
-
 int compare_time(struct stat *file1, struct stat *file2) {
   off_t file1_size = file1->st_mtime;
   off_t file2_size = file2->st_mtime;
@@ -73,7 +66,7 @@ t_list *alpha_sorted_merge(t_list *a, t_list *b) {
     return (b);
   else if (b == NULL)
     return (a);
-  /* Pick either a or b, and recur */
+  /* Pick either a or b, and recurse */
   if (compare_strings(a->filename, b->filename) == 1 ||
     compare_strings(a->filename, b->filename) == 0) {
       result = b;
@@ -100,27 +93,6 @@ t_list *time_mod_sorted_merge(t_list *a, t_list *b) {
   } else {
     result = b;
     result->next = time_mod_sorted_merge(b->next, a);
-  }
-  return (result);
-}
-
-
-/* merge lists in sorted order based on time modified */
-t_list *file_size_sorted_merge(t_list *a, t_list *b) {
-  t_list *result = NULL;
-  /* Base cases */
-  if (a == NULL) {
-    return (b);
-  } else if (b == NULL) {
-    return (a);
-  }
-  if (compare_size((long long)a->info->st_size, (long long)b->info->st_size) == 1 ||
-        compare_size((long long)a->info->st_size, (long long)b->info->st_size) == 0) {
-    result = a;
-    result->next = file_size_sorted_merge(b, a->next);
-  } else {
-    result = b;
-    result->next = file_size_sorted_merge(b->next, a);
   }
   return (result);
 }
