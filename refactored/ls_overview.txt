@@ -30,3 +30,120 @@ TODO
     - should (PRINT?) all files in each directory encountered.
     - recurse for a directory is within a directory.
   3. TEST!  Print list? Etc.
+
+7.10 - 7.11
+  Much work and debugging.
+  Feel comfortable with structure and layout.
+  No memory issues!
+
+7.12 TODO:
+  1. Handle printing directories passed in by user
+    - file not have a path.
+      a. added realpath() to build_list if opts->include_hidden_files.
+        - REALPATH is not working for me as I thought.
+        - Find way to add path without using REALPATH.
+    - add path?
+
+    * got a reursive loop printing dirs...
+    need to not add '.' and '..' to recursive dir lists.
+
+    Strategy:
+      - Add a property to the struct: is_input.
+      - If is_input == false ... skip filenames starting with '.'
+
+    STUCK AGAIN!
+    Recursion of reading directories is confusing me.
+    Building lists incorrectly...
+    Break and try again later (7/12: 3:20 PM)
+
+    (7/13: 9:30 AM)
+    * print.c, line 28
+      - Looks like we are adding dir files to the original list.
+      - We want to create a NEW list and use this...
+
+      SCHEMA
+
+      -user input: a.c dir_file1 b.c
+        - dir_file: test1.c dir_file2
+          -dir_file2: test2.c
+
+      command: my_ls
+
+      Print:
+        a.c
+        b.c
+        dir_file1
+
+      if (-R):
+
+      ./dir_file.c:
+        test1.c
+        dir_file2
+
+      ./dir_file2
+        test2.c
+
+    * NEW STRATEGY:
+      - method: print_dir_lists(t_list *head_dir)
+      - Called on EVERY node that is a dir.
+      - We have already printed the master list.
+      - This method called on any node that is a dir in the list.
+      - Steps:
+        - read the dir.
+        - create t_list *new_dir - keep pointer to head of list
+        - pathname for each file: "head_dir->path" + "/" + "filename"
+        - closedir
+        - print_list: new_dir.
+        - recursively call print_dir_lists on any directories in new_dir.
+        - delete new_dir.
+
+    7/13: 7:45 PM
+    - New Schema for main.c:
+      * Unchanged:
+        - create_opts()
+        - make_user_file_list()
+        - sort_with_options()
+
+      * New:
+        - print_list(user_file_list, opts)
+          - for all directories in user_file_list
+            - make_dir_list
+            - print_list(dir_list)
+              * recursive call if opts -R
+                 - calls itself and prints all nested dirs
+
+  3. FIX BUGS!
+    *BUG 1:
+      - ls test_dir:
+        nested_dir      nesteddir_2     test1.c
+      - my_ls test_dir:
+        test_dir nested_dir nesteddir_2 test1.c test_dir
+
+      Notes:
+        - "test_dir/." ==>
+          - Experiment 1:
+            when creating dir_list, skip nodes for . and ../
+          - RESULT: we still have unneeded nodes w head_dir name.
+
+          - Experiment 2:
+            - advance the list one node before print_list.
+            - be sure the last node is not the head_node.
+          - RESULT:
+            - works
+
+          Refactor:
+            - Initialize nodes with struct stat!
+            - Otherwise the struct stat created in recursive
+              makedirlist will not exist when needed.
+
+          SOLUTION: use PATH when calling stat to get info for nodes.
+
+
+
+  7/14: All sorting and printing works!
+    TODO:
+      (Fix behavior for -a with no files) - DONE.
+      1. Test Delete Methods
+        - delete list after we are done printing!
+      2. Review for memory leaks!
+      3. Cleanup: get rid of unused methods, etc.

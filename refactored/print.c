@@ -1,71 +1,90 @@
 #include "my_list.h"
-void print_directories(t_list *file_list, t_opts *opts) {
-  struct stat     *buf_stat = malloc(sizeof(struct stat));
-  t_list          *head = file_list;
-  DIR             *directory = opendir(file_list->path);
-  struct dirent   *buf_dir;
-
-  if (directory != NULL) {
-    /* continually open next directory stream until reaching the end of file list. */
-    while ((buf_dir = readdir(directory)) != NULL) {
-      /* build list of files in the directory */
-      file_list->next = create_node();
-      file_list = file_list->next;
-      file_list->filename = buf_dir->d_name;
-      realpath(buf_dir->d_name, file_list->path);
-      stat(file_list->path, buf_stat);
-      if (S_ISDIR(buf_stat->st_mode)) {
-        file_list->is_dir = 1;
-      }
-      file_list->info = buf_stat;
-    }
-    closedir(directory);
-    printf("%s: \n", head->path);
-    t_list *files = head->next;
-    files = sort_with_options(files, opts);
-    print_list(files, opts);
-    // recurse to print all directories
-    while (files != NULL) {
-      if (files->is_dir == 1 && opts->include_hidden_files == 1) {
-        print_directories(files, opts);
-      }
-    }
-  }
-  file_list = file_list->next;
-  if (file_list != NULL) {
-    print_directories(file_list, opts);
-  }
-}
 
 char *formatdate(char *str, time_t val) {
   strftime(str, 36, "%d.%m.%Y %H:%M:%S", localtime(&val));
   return str;
 }
 
+/* changes head of list: skips nodes '.' and '../' */
+t_list *skip_hidden_files(t_list *file_list, t_opts *opts) {
+  /* handle -a option */
+  if (opts->include_hidden_files == 0) {
+    while (file_list != NULL) {
+      if (file_list->filename[0] == '.') {
+        file_list = file_list->next;
+      } else {
+        break;
+      }
+    }
+  }
+  return file_list;
+}
+
 void print_list(t_list *head, t_opts *opts) {
+  if (head->is_original && head->is_dir) {
+    /* don't print user arg if it is a dir */
+    return;
+  }
+  /*
+    In linux ls, files print in order DOWN columns.
+    In my_ls, files print in order ACROSS columns.
+  */
   t_list *current_node = head;
+  int printed_index = 0;
   while (current_node != NULL) {
+    if (printed_index > 2) {
+      printf("\n");
+      printed_index = 0;
+    }
     if (current_node->info == NULL) {
       printf("my_ls: %s: No such file or directory\n", current_node->filename);
     } else {
       /* handle -a option */
       current_node = skip_hidden_files(current_node, opts);
       if (current_node != NULL) {
-        printf("%s", current_node->filename);
-
-        if (opts->sort_by_time_modified) {
-          char *buf;
-          buf = ctime(&current_node->info->st_mtime);
-          printf(", time modified: %s", buf);
-        }
-        if (opts->show_size_in_bytes) {
-          printf(", size: %lld", ((long long)current_node->info->st_size));
-        }
-        printf("\n");
+        /* print filename */
+        printf("%-20s", current_node->filename);
+        printed_index++;
       }
     }
-    if (current_node != NULL) {
-      current_node = current_node->next;
+    current_node = current_node->next;
+  }
+  printf("\n");
+}
+
+// create, print, and delete file list from head dir node
+void print_dir_list(t_list *sorted, t_opts *opts) {
+  t_list *dir_list = make_dir_list(sorted);
+  t_list *sorted_dir = sort_with_options(dir_list, opts);
+  // print non-dir filenames passed in my user.
+  print_list(sorted_dir, opts);
+  // read/print files from directories passed in by user.
+  recurse(sorted_dir, opts);
+  // after recursion (posible MANY levels), delete nested dir lists.
+  destroy_list(&sorted_dir);
+}
+
+void recurse(t_list *sorted, t_opts *opts) {
+  while (sorted != NULL) {
+    if (sorted->is_dir) {
+      if (sorted->is_original == 0) {
+        while (sorted->filename[0] == '.') {
+          sorted = sorted->next;
+        }
+      }
+      // print dirs passed in by user, or all dirs if -R
+      if(sorted->is_original || opts->list_dirs_recursively == 1) {
+        // print files from original directory passed in by user.
+        if (sorted->is_original) {
+          print_dir_list(sorted, opts);
+        } else {
+          // only print path of nested dirs.
+          printf("\n");
+          printf("%s:\n", sorted->path);
+          print_dir_list(sorted, opts);
+        }
+      }
     }
+    sorted = sorted->next;
   }
 }

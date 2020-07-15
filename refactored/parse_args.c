@@ -1,7 +1,7 @@
 #include "my_list.h"
 
 int count_files(int argc, char **argv) {
-  if (argc == 1) {
+  if (argc == 1 || (argc == 2 && argv[1][0] == '-')) {
     return 1;
   }
   int filecount = 0;

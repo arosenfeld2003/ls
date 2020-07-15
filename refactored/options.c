@@ -7,9 +7,6 @@ t_opts *get_opts(char *flags, t_opts *opts) {
       case 'a':
         opts->include_hidden_files = 1;
         break;
-      case 'z':
-        opts->show_size_in_bytes = 1;
-        break;
       case 'R':
         opts->list_dirs_recursively = 1;
         break;
@@ -27,12 +24,9 @@ t_opts *get_opts(char *flags, t_opts *opts) {
 // initialize without any options.
 t_opts *init_opts() {
   t_opts *opts = malloc(sizeof(t_opts));
-
   opts->include_hidden_files = 0; // -a
-  opts->show_size_in_bytes = 0; // -z
   opts->list_dirs_recursively = 0; // -R
   opts->sort_by_time_modified = 0; // -t
-
   return opts;
 }
 

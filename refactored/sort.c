@@ -94,8 +94,7 @@ t_list *time_mod_sorted_merge(t_list *a, t_list *b) {
   } else if (b == NULL) {
     return (a);
   }
-  if (compare_size((long long)a->info->st_mtime, (long long)b->info->st_mtime) == 1 ||
-        compare_size((long long)a->info->st_mtime, (long long)b->info->st_mtime) == 0) {
+  if (compare_size((long long)a->info->st_mtime, (long long)b->info->st_mtime) == 1) {
     result = a;
     result->next = time_mod_sorted_merge(b, a->next);
   } else {
@@ -145,23 +144,6 @@ void merge_sort(t_list **headRef, t_opts *opts) {
     /* merge lists sorted alphabetically */
     *headRef = alpha_sorted_merge(a, b);
   }
-}
-
-/* skips nodes of the list: requires pointer to head */
-t_list *skip_hidden_files(t_list *file_list, t_opts *opts) {
-  /* handle -a option */
-  if (opts->include_hidden_files == 0) {
-    while (file_list != NULL) {
-      // hidden files will always be first in list.
-      if (strcmp(file_list->filename, ".") == 0 ||
-              strcmp(file_list->filename, "../") == 0) {
-        file_list = file_list->next;
-      } else {
-        break;
-      }
-    }
-  }
-  return file_list;
 }
 
 t_list *sort_with_options(t_list *file_list, t_opts *opts) {
