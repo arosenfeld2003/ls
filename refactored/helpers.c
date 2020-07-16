@@ -3,9 +3,9 @@
 /* concatanate dirname and filename with '/' separator */
 char *make_path(char *dirname, char *filename) {
   char *path;
-  if (dirname[0] == '.') {
-    path = malloc(sizeof(char) * strlen(dirname) + 1);
-    strcpy(path, dirname);
+  if (strcmp(dirname, ".") == 0 && filename[0] == '.') {
+    path = malloc(sizeof(char) * 2);
+    strcpy(path, ".");
   } else {
     path = malloc(sizeof(char) * ((strlen(dirname) +
                         strlen(filename)) + 2));

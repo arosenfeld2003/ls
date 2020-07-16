@@ -51,9 +51,9 @@ void print_list(t_list *head, t_opts *opts) {
 void print_dir_list(t_list *sorted, t_opts *opts) {
   t_list *dir_list = make_dir_list(sorted);
   t_list *sorted_dir = sort_with_options(dir_list, opts);
-  // print non-dir filenames passed in my user.
+  // print non-dir filenames.
   print_list(sorted_dir, opts);
-  // read/print files from directories passed in by user.
+  // read/print files from directories if user input or -R option.
   recurse(sorted_dir, opts);
   // after recursion (posible MANY levels), delete nested dir lists.
   destroy_list(&sorted_dir);
@@ -61,12 +61,12 @@ void print_dir_list(t_list *sorted, t_opts *opts) {
 
 void recurse(t_list *sorted, t_opts *opts) {
   while (sorted != NULL) {
-    if (sorted->is_dir) {
-      if (sorted->is_original == 0) {
-        while (sorted->filename[0] == '.') {
-          sorted = sorted->next;
-        }
+    if (sorted->is_original == 0) {
+      while (sorted->filename[0] == '.') {
+        sorted = sorted->next;
       }
+    }
+    if (sorted->is_dir) {
       // print dirs passed in by user, or all dirs if -R
       if(sorted->is_original || opts->list_dirs_recursively == 1) {
         // print files from original directory passed in by user.
