@@ -42,13 +42,21 @@ void print_list(t_list *head, t_opts *opts) {
         printed_index++;
       }
     }
-    current_node = current_node->next;
+    if (current_node == NULL) {
+      continue;
+    } else {
+      current_node = current_node->next;
+    }
   }
   printf("\n");
 }
 
 // create, print, and delete file list from head dir node
 void print_dir_list(t_list *sorted, t_opts *opts) {
+  // handle an empty directory.
+  if (strcmp(sorted->filename, "") == 0) {
+    return;
+  }
   t_list *dir_list = make_dir_list(sorted);
   t_list *sorted_dir = sort_with_options(dir_list, opts);
   // print non-dir filenames.
@@ -61,22 +69,35 @@ void print_dir_list(t_list *sorted, t_opts *opts) {
 
 void recurse(t_list *sorted, t_opts *opts) {
   while (sorted != NULL) {
+    // while (strcmp(sorted->filename, "") != 0) {
     if (sorted->is_original == 0) {
       while (sorted->filename[0] == '.') {
-        sorted = sorted->next;
-      }
-    }
-    if (sorted->is_dir) {
-      // print dirs passed in by user, or all dirs if -R
-      if(sorted->is_original || opts->list_dirs_recursively == 1) {
-        // print files from original directory passed in by user.
-        if (sorted->is_original) {
-          print_dir_list(sorted, opts);
+        if (sorted->next != NULL) {
+          sorted = sorted->next;
         } else {
-          // only print path of nested dirs.
-          printf("\n");
-          printf("%s:\n", sorted->path);
-          print_dir_list(sorted, opts);
+          // handle empty directory node
+          sorted->next = create_node();
+          sorted->next->filename = "";
+          sorted = sorted->next;
+        }
+      }
+      // if (sorted->next == NULL) {
+      //   sorted = sorted->next;
+      // }
+    }
+    if (strcmp(sorted->filename, "") != 0) {
+      if (sorted->is_dir) {
+        // print dirs passed in by user, or all dirs if -R
+        if(sorted->is_original || opts->list_dirs_recursively == 1) {
+          // print files from original directory passed in by user.
+          if (sorted->is_original) {
+            print_dir_list(sorted, opts);
+          } else {
+            // only print path of nested dirs.
+            printf("\n");
+            printf("%s:\n", sorted->path);
+            print_dir_list(sorted, opts);
+          }
         }
       }
     }
