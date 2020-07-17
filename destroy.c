@@ -30,8 +30,5 @@ void destroy_list(t_list **head) {
       free_node(temp);
     }
   }
-  // } else {
-  // }
-
   head = NULL;
 }

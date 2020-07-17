@@ -63,13 +63,13 @@ void print_dir_list(t_list *sorted, t_opts *opts) {
   print_list(sorted_dir, opts);
   // read/print files from directories if user input or -R option.
   recurse(sorted_dir, opts);
-  // after recursion (posible MANY levels), delete nested dir lists.
+  // recursive lists are deleted after they are printed.
+  // after recursion, delete original list.
   destroy_list(&sorted_dir);
 }
 
 void recurse(t_list *sorted, t_opts *opts) {
   while (sorted != NULL) {
-    // while (strcmp(sorted->filename, "") != 0) {
     if (sorted->is_original == 0) {
       while (sorted->filename[0] == '.') {
         if (sorted->next != NULL) {
@@ -81,9 +81,6 @@ void recurse(t_list *sorted, t_opts *opts) {
           sorted = sorted->next;
         }
       }
-      // if (sorted->next == NULL) {
-      //   sorted = sorted->next;
-      // }
     }
     if (strcmp(sorted->filename, "") != 0) {
       if (sorted->is_dir) {

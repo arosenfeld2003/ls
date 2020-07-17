@@ -3,12 +3,16 @@
 /* concatanate dirname and filename with '/' separator */
 char *make_path(char *dirname, char *filename) {
   char *path;
-  if (strcmp(dirname, ".") == 0 && filename[0] == '.') {
+  // handle /tmp global directories
+  if (filename[0] == '/') {
+    path = malloc(sizeof(char) * strlen(filename) + 1);
+    strcpy(path, filename);
+  } else if (strcmp(dirname, ".") == 0 && filename[0] == '.') {
     path = malloc(sizeof(char) * 2);
     strcpy(path, ".");
   } else {
     path = malloc(sizeof(char) * ((strlen(dirname) +
-                        strlen(filename)) + 2));
+                  strlen(filename)) + 2));
     strcpy(path, dirname);
     strcat(path, "/");
     strcat(path, filename);
