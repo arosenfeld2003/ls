@@ -1,7 +1,7 @@
 #include "my_list.h"
 
 int count_files(int argc, char **argv) {
-  if (argc == 1 || (argc == 2 && argv[1][0] == '-')) {
+  if (argc == 1) {
     return 1;
   }
   int filecount = 0;
@@ -12,7 +12,11 @@ int count_files(int argc, char **argv) {
     }
     i++;
   }
-  return filecount;
+  if (filecount == 0) {
+    return 1;
+  } else {
+    return filecount;
+  }
 }
 
 /* user must free filenames array */
@@ -21,8 +25,7 @@ char **set_filenames(int argc, char **argv) {
   char *file = NULL;
   int file_count = count_files(argc, argv);
 
-  if ((argc == 1) || (argc == 2 && argv[1][0] == '-')) {
-    file_count = 1;
+  if (file_count == 1) {
     file = ".";
   } else {
     int i = 1;
