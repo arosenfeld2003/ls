@@ -25,7 +25,7 @@ char **set_filenames(int argc, char **argv) {
   char *file = NULL;
   int file_count = count_files(argc, argv);
 
-  if (file_count == 1) {
+  if (file_count == 1 && argc == 1) {
     file = ".";
   } else {
     int i = 1;
