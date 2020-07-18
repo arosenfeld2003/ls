@@ -37,3 +37,13 @@ t_list *node_copy(t_list *original) {
   new->next = NULL;
   return new;
 }
+
+void set_filename(t_list *current_node, char *filename) {
+    current_node->filename = malloc(sizeof(char) * strlen(filename) + 1);
+    current_node->filename = strcpy(current_node->filename, filename);
+}
+
+void set_pathname(t_list *current_node, char *pathname) {
+  current_node->path = malloc(sizeof(char) * strlen(pathname) + 1);
+  current_node->path = strcpy(current_node->path, pathname);
+}

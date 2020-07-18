@@ -26,8 +26,8 @@ t_list *make_user_filelist(int argc, char **argv) {
       current_node->next = create_node();
       current_node = current_node->next;
     }
-    current_node->filename = filenames[i];
-    current_node->path = make_path(".", filenames[i]);
+    set_filename(current_node, filenames[i]);
+    set_pathname(current_node, filenames[i]);
     current_node->is_original = 1;
     if (stat(current_node->filename, current_node->info) == -1) {
       current_node->info = NULL;
@@ -57,11 +57,9 @@ t_list *make_dir_list(t_list *dir_node) {
       // create next node
       current->next = create_node();
       current = current->next;
-      current->filename = malloc(sizeof(char) * strlen(buf_dir->d_name) + 1);
-      strcpy(current->filename, buf_dir->d_name);
+      set_filename(current, buf_dir->d_name);
       char *path = make_path(head_dir->path, current->filename);
-      current->path = malloc(sizeof(char) * strlen(path) + 1);
-      strcpy(current->path, path);
+      set_pathname(current, path);
       struct stat *buf_stat = malloc(sizeof(struct stat));
       stat(current->path,  buf_stat);
       current->info = buf_stat;

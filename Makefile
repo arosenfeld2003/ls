@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 DEPS = my_list.h
-OBJFILES = build_file_list.o main.o parse_args.o \
-						print.o sort.o destroy.o options.o helpers.o
+OBJFILES = build_file_list.c main.c parse_args.c \
+						print.c sort.c destroy.c options.c helpers.c
 TARGET = my_ls
 
 all: $(TARGET)
@@ -12,4 +12,4 @@ $(TARGET): $(OBJFILES) $(DEPS)
 
 .PHONY: clean
 clean:
-	rm -f $(OBJFILES) $(TARGET)
+	rm -f *.o $(TARGET)
