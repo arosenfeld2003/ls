@@ -27,9 +27,10 @@ t_list *make_user_filelist(int argc, char **argv) {
       current_node = current_node->next;
     }
     current_node->filename = filenames[i];
-    current_node->path = filenames[i];
     current_node->path = make_path(".", filenames[i]);
+    current_node->is_original = 1;
     if (stat(current_node->filename, current_node->info) == -1) {
+      current_node->info = NULL;
       current_node = current_node->next;
       i++;
     } else {
@@ -38,7 +39,6 @@ t_list *make_user_filelist(int argc, char **argv) {
       }
       i++;
     }
-    current_node->is_original = 1;
   }
   free(filenames);
   return file_list;
