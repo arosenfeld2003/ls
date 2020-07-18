@@ -97,8 +97,9 @@ t_list *time_mod_sorted_merge(t_list *a, t_list *b) {
   return (result);
 }
 
-void merge_sort(t_list **headRef, t_opts *opts) {
-  t_list *head = *headRef;
+// void merge_sort(t_list **head_ref, t_opts *opts) {
+void merge_sort(t_list **head_ref, t_list *(*func_ptr)(t_list*, t_list*)) {
+  t_list *head = *head_ref;
   t_list *a;
   t_list *b;
   /* Base case -- length 0 */
@@ -108,18 +109,21 @@ void merge_sort(t_list **headRef, t_opts *opts) {
   /* Split head into 'a' and 'b' sublists */
   split_node(head, &a, &b);
   /* Recursively break down the sublists */
-  merge_sort(&a, opts);
-  merge_sort(&b, opts);
-  if (opts && opts->sort_by_time_modified == 1) {
-    *headRef = time_mod_sorted_merge(a, b);
-  } else {
-    /* merge lists sorted alphabetically */
-    *headRef = alpha_sorted_merge(a, b);
-  }
+  merge_sort(&a, func_ptr);
+  merge_sort(&b, func_ptr);
+  /* sort by mod_time or lexicographically */
+  *head_ref = (*func_ptr)(a, b);
 }
 
 t_list *sort_with_options(t_list *file_list, t_opts *opts) {
-  /* handle options */
-  merge_sort(&file_list, opts);
+  /* use function pointer */
+  t_list *(*func_ptr)(t_list*, t_list*);
+  if (opts && opts->sort_by_time_modified == 1) {
+    func_ptr = &time_mod_sorted_merge;
+  } else {
+    /* merge lists sorted alphabetically */
+    func_ptr = &alpha_sorted_merge;
+  }
+  merge_sort(&file_list, func_ptr);
   return file_list;
 }

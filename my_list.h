@@ -42,7 +42,7 @@ t_opts      *create_opts(int argc, char **argv);
 void        split_node(t_list *source, t_list **front, t_list** back);
 t_list      *alpha_sorted_merge(t_list *a, t_list *b);
 t_list      *time_mod_sorted_merge(t_list *a, t_list *b);
-void        merge_sort(t_list **headRef, t_opts *opts);
+void        merge_sort(t_list **head_ref, t_list* (*func_ptr)(t_list*, t_list*));
 t_list      *skip_hidden_files(t_list *file_list, t_opts *opts);
 t_list      *sort_with_options(t_list *file_list, t_opts *opts);
 void        print_list(t_list *head, t_opts *opts);
