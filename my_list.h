@@ -50,6 +50,7 @@ t_list      *make_dir_list(t_list *head_dir);
 void        recurse(t_list *sorted, t_opts *opts);
 t_list      *node_copy(t_list *original);
 char        *make_path(char *dirname, char *filename);
+int         get_length(t_list *filelist);
 void        set_filename(t_list *current, char *filename);
 void        set_pathname(t_list *current, char *pathname);
 void        print_dir_list(t_list *sorted, t_opts *opts);

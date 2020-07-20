@@ -47,3 +47,13 @@ void set_pathname(t_list *current_node, char *pathname) {
   current_node->path = malloc(sizeof(char) * strlen(pathname) + 1);
   current_node->path = strcpy(current_node->path, pathname);
 }
+
+int get_length(t_list *filelist) {
+  t_list *current = filelist;
+  int len = 0;
+  while (current != NULL) {
+    len ++;
+    current = current->next;
+  }
+  return len;
+}

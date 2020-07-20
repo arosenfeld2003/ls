@@ -1,9 +1,13 @@
 #include "my_list.h"
 
+/* user must free filenames array */
+char **allocate_filenames(char *file, int i, char **filenames) {
+  filenames[i] = malloc(sizeof(char) * strlen(file) + 1);
+  strcpy(filenames[i], file);
+  return filenames;
+}
+
 int count_files(int argc, char **argv) {
-  if (argc == 1) {
-    return 1;
-  }
   int filecount = 0;
   int i = 1;
   while (i < argc) {
@@ -12,32 +16,35 @@ int count_files(int argc, char **argv) {
     }
     i++;
   }
-  if (filecount == 0) {
-    return 1;
-  } else {
-    return filecount;
-  }
+  return filecount;
 }
 
-/* user must free filenames array */
 char **set_filenames(int argc, char **argv) {
   char **filenames = NULL;
   char *file = NULL;
-  int file_count = count_files(argc, argv);
+  int filecount = count_files(argc, argv);
 
-  if (file_count == 1 && argc == 1) {
+  if (filecount == 0) {
+    filecount = 1;
+    filenames = malloc(sizeof(char *) * (filecount));
     file = ".";
-  } else {
+    filenames = allocate_filenames(file, 0, filenames);
+  }
+
+  if (filenames != NULL) {
     int i = 1;
     // skip the flags.
-    while (argv[i][0] == '-') {
-      i++;
+    while (argv[i]) {
+      if (argv[i][0] == '-') {
+        i++;
+      }
     }
-  }
-  filenames = malloc(sizeof(char *) * (file_count));
-  if (file != NULL) {
-    filenames[0] = malloc(sizeof(char) * strlen(file) + 1);
-    strcpy(filenames[0], file);
+    filenames = allocate_filenames(file, 0, filenames);
+  // }
+  // if (file != NULL) {
+    // filenames[0] = malloc(sizeof(char) * strlen(file) + 1);
+    // strcpy(filenames[0], file);
+    // filenames = allocate_filenames(file, 0, filenames);
   } else {
     int i = 0;
     int j;
@@ -48,9 +55,14 @@ char **set_filenames(int argc, char **argv) {
       default:
         j = 1;
     }
+    if (argv[j] == NULL) {
+      return filenames;
+    }
+    filenames = malloc(sizeof(char *) * (filecount));
     while (j < argc) {
-      filenames[i] = malloc(sizeof(char) * strlen(argv[j]) + 1);
-      strcpy(filenames[i], argv[j]);
+      // filenames[i] = malloc(sizeof(char) * strlen(argv[j]) + 1);
+      // strcpy(filenames[i], argv[j]);
+      filenames = allocate_filenames(argv[j], i, filenames);
       i++;
       j++;
     }

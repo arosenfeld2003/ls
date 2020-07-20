@@ -18,10 +18,12 @@ t_list *make_user_filelist(int argc, char **argv) {
   t_list *current_node = file_list;
 
   char **filenames = set_filenames(argc, argv);
-  int file_count = count_files(argc, argv);
-
+  int filecount = count_files(argc, argv);
+  if (filecount == 0) {
+    filecount = 1;
+  }
   int i = 0;
-  while (i < file_count) {
+  while (i < filecount) {
     if (current_node->filename != NULL) {
       current_node->next = create_node();
       current_node = current_node->next;
@@ -60,6 +62,7 @@ t_list *make_dir_list(t_list *dir_node) {
       set_filename(current, buf_dir->d_name);
       char *path = make_path(head_dir->path, current->filename);
       set_pathname(current, path);
+      free(path);
       struct stat *buf_stat = malloc(sizeof(struct stat));
       stat(current->path,  buf_stat);
       current->info = buf_stat;

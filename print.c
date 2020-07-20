@@ -32,13 +32,15 @@ void print_list(t_list *head, t_opts *opts) {
       printed_index = 0;
     }
     if (current_node->info == NULL) {
-      printf("my_ls: %s: No such file or directory\n", current_node->filename);
+      // printf("my_ls: %s: No such file or directory\n", current_node->filename);
+      fprintf(stderr, "my_ls: %s: No such file or directory\n", current_node->filename);
+
     } else {
       /* handle -a option */
       current_node = skip_hidden_files(current_node, opts);
       if (current_node != NULL) {
         /* print filename */
-        printf("%-20s", current_node->filename);
+        printf("%-20s ", current_node->filename);
         printed_index++;
       }
     }
@@ -69,6 +71,7 @@ void print_dir_list(t_list *sorted, t_opts *opts) {
 }
 
 void recurse(t_list *sorted, t_opts *opts) {
+  int len = get_length(sorted);
   while (sorted != NULL) {
     if (sorted->is_original == 0) {
       while (sorted->filename[0] == '.') {
@@ -87,13 +90,13 @@ void recurse(t_list *sorted, t_opts *opts) {
         // print dirs passed in by user, or all dirs if -R
         if(sorted->is_original || opts->list_dirs_recursively == 1) {
           // print files from original directory passed in by user.
-          if (sorted->is_original) {
+          if (sorted->is_original && len <= 1) {
             print_dir_list(sorted, opts);
           } else {
-            // only print path of nested dirs.
-            printf("\n");
+            // print path of nested dirs.
             printf("%s:\n", sorted->path);
             print_dir_list(sorted, opts);
+            printf("\n");
           }
         }
       }
