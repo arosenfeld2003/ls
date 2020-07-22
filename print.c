@@ -22,17 +22,18 @@ void print_list(t_list *head, t_opts *opts) {
   }
   /*
     In linux ls, files print in order DOWN columns.
-    In my_ls, files print in order ACROSS columns.
+    In my_ls, files were printed in order ACROSS columns.
+    This lead to confusion about the order of the list.
+    Instead, we now print one long column of files.
   */
   t_list *current_node = head;
-  int printed_index = 0;
+  // int printed_index = 0;
   while (current_node != NULL) {
-    if (printed_index > 2) {
-      printf("\n");
-      printed_index = 0;
-    }
+    // if (printed_index > 2) {
+    //   printf("\n");
+    //   printed_index = 0;
+    // }
     if (current_node->info == NULL) {
-      // printf("my_ls: %s: No such file or directory\n", current_node->filename);
       fprintf(stderr, "my_ls: %s: No such file or directory\n", current_node->filename);
 
     } else {
@@ -40,8 +41,9 @@ void print_list(t_list *head, t_opts *opts) {
       current_node = skip_hidden_files(current_node, opts);
       if (current_node != NULL) {
         /* print filename */
-        printf("%-20s ", current_node->filename);
-        printed_index++;
+        // printf("%-20s ", current_node->filename);
+        printf("%s\n", current_node->filename);
+        // printed_index++;
       }
     }
     if (current_node == NULL) {

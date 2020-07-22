@@ -18,6 +18,7 @@ t_opts *get_opts(char *flags, t_opts *opts) {
     }
     i++;
   }
+  free(flags);
   return opts;
 }
 

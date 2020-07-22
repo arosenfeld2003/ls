@@ -40,11 +40,6 @@ char **set_filenames(int argc, char **argv) {
       }
     }
     filenames = allocate_filenames(file, 0, filenames);
-  // }
-  // if (file != NULL) {
-    // filenames[0] = malloc(sizeof(char) * strlen(file) + 1);
-    // strcpy(filenames[0], file);
-    // filenames = allocate_filenames(file, 0, filenames);
   } else {
     int i = 0;
     int j;
@@ -60,8 +55,6 @@ char **set_filenames(int argc, char **argv) {
     }
     filenames = malloc(sizeof(char *) * (filecount));
     while (j < argc) {
-      // filenames[i] = malloc(sizeof(char) * strlen(argv[j]) + 1);
-      // strcpy(filenames[i], argv[j]);
       filenames = allocate_filenames(argv[j], i, filenames);
       i++;
       j++;
@@ -82,6 +75,7 @@ char *create_flags(int argc, char **argv) {
     }
     i++;
   }
+  // flags free'd in get_opts() after being read.
   flags = malloc(sizeof(char) * flag_count + 1);
   char temp_head[flag_count + 1];
   char *temp_ptr = temp_head;
