@@ -1,6 +1,6 @@
 #include "my_list.h"
 
-/* concatanate dirname and filename with '/' separator */
+/* concatenate dirname and filename with '/' separator */
 char *make_path(char *dirname, char *filename) {
   char *path;
   // handle /tmp global directories
