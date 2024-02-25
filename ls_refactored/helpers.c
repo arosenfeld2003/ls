@@ -1,9 +1,9 @@
 #include "file_list.h"
 
 // strlen helper
-int str_len(char *str) {
+int str_len(const char *str) {
     int i = 0;
-    while (str[i] != '\n') {
+    while (str[i] != '\0') {
         i++;
     }
     return i;
@@ -47,46 +47,56 @@ int str_cmp(const char* param_1, const char* param_2) {
 
 // sort helpers
 int compare_by_name(const void *a, const void *b) {
-    file_entry *file_a = *(file_entry **)a;
-    file_entry *file_b = *(file_entry **)b;
+    // Cast from void pointer to file_entry_node pointer
+    const file_entry_node *node_a = a;
+    const file_entry_node *node_b = b;
+
+    // the entry field of each node is the struct containing the pathname
+    file_entry *file_a = node_a->entry;
+    file_entry *file_b = node_b->entry;
+
     return str_cmp(file_a->name, file_b->name);
 }
 
-int compare_buy_mod_time(const void *a, const void *b) {
-    file_entry *file_a = *(file_entry **)a;
-    file_entry *file_b = *(file_entry **)b;
+int compare_by_mod_time(const void *a, const void *b) {
+    // Cast from void pointer to file_entry_node pointer
+    const file_entry_node *node_a = a;
+    const file_entry_node *node_b = b;
+
+    // the entry field of each node is the struct containing the pathname
+    file_entry *file_a = node_a->entry;
+    file_entry *file_b = node_b->entry;
+
+    // check seconds first
     if (file_a->mod_time != file_b->mod_time) {
-        // return either 1 if file_a is greater or -1 if file_b is greater
-        return (file_a->mod_time > file_b->mod_time) - (file_a->mod_time < file_b->mod_time)
+        // sort from first_modified to last_modified
+        return (file_a->mod_time > file_b->mod_time) - (file_a->mod_time > file_b->mod_time);
     }
     // if the seconds are equal, look at the nsec values
-    return (file_a->mod_nsec > file_b->mod_nsec) - (file_a->mod_nsec < file_b->mod_nsec)
+    return (file_a->mod_nsec > file_b->mod_nsec) - (file_a->mod_nsec > file_b->mod_nsec);
 }
 
 // merge sort helper: accepts the list, and nodes for storing front and back of the split list
 void split_list(file_entry_node* head, file_entry_node** front, file_entry_node** back) {
     file_entry_node* slow;
     file_entry_node* fast;
-    if (head == NULL || head->next == NULL) {
-        // list has < 2 nodes
-        *front = head;
-        *back = NULL;
-    } else {
-        slow = head;
-        fast = head->next;
-        // advance slow 1 node and fast 2 nodes
-        while (fast != NULL) {
+    slow = head;
+    fast = head->next;
+
+    while (fast != NULL) {
+        // advance fast 2 nodes and slow 1 node
+        fast = fast->next;
+        if (fast != NULL) {
+            slow = slow->next;
             fast = fast->next;
-            if (fast != NULL) {
-                slow = slow->next;
-                fast = fast->next;
-            }
         }
-        //  split list at midpoint
-        *front = head;
-        *back = slow->next;
-        slow->next = NULL;
     }
+
+    //  split list at midpoint
+    *front = head;
+    *back = slow->next;
+    slow->next = NULL;
+
 }
 
 file_entry_node * merge_sorted_lists(file_entry_node* a, file_entry_node* b, int (*comp)(const void*, const void *)) {
@@ -97,8 +107,8 @@ file_entry_node * merge_sorted_lists(file_entry_node* a, file_entry_node* b, int
     else if (b == NULL) return a;
 
     // recurse on a or b
-    if(comp(a->entry, b->entry) <= 0) {
-        return = a;
+    if(comp(a, b) <= 0) {
+        result = a;
         result->next = merge_sorted_lists(a->next, b, comp);
     } else {
         result = b;
@@ -128,21 +138,16 @@ void merge_sort(file_entry_node** headRef, int(*comp)(const void*, const void*))
     *headRef = merge_sorted_lists(a, b, comp);
 }
 
-void free_entries(file_entry **entries, int count) {
-    for (int i = 0; i < count; i++) {
-        free(entries[i]->name);
-        free(entries[i]);
-    }
-    free(entries);
-}
-
 // parse command line args for ls
-void parse_args(int argc, char *argv[], int *opt_a, int *opt_t) {
+void parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char **path) {
     for (int i = 1; i < argc; i++) {
         if (str_cmp(argv[i], "-a") == 0) {
             *opt_a = 1;
         } else if (str_cmp(argv[i], "-t") == 0) {
             *opt_t = 1;
+        } else {
+            // non-optional argument will be treated as a path
+            *path = argv[i];
         }
     }
 }
