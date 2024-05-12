@@ -19,3 +19,6 @@ helpers.o: helpers.c
 
 clean:
 	rm -f *.o my_ls
+
+fclean: clean
+	rm -f my_ls
