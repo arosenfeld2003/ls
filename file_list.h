@@ -38,7 +38,7 @@ typedef struct file_entry_node {
 void list_directory(const char *path, int opt_a, int opt_t);
 int str_len(const char *str);
 char* str_cpy(char* dst, char* src);
-void parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char **path);
+int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char **path);
 // void free_entries(file_entry **entries, int count);
 
 // merge sort helpers
