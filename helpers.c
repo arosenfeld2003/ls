@@ -128,15 +128,35 @@ void merge_sort(file_entry_node** headRef, int(*comp)(const void*, const void*))
 }
 
 // parse command line args for ls
-void parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char **path) {
+#include <stdio.h>
+
+// parse cli args from user
+int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char **path) {
+    *path = ".";  // set default path to current directory
+    int has_error = 0; // error tracking
+
     for (int i = 1; i < argc; i++) {
-        if (str_cmp(argv[i], "-a") == 0) {
-            *opt_a = 1;
-        } else if (str_cmp(argv[i], "-t") == 0) {
-            *opt_t = 1;
+        if (argv[i][0] == '-') {  // handle flags
+            for (int j = 1; argv[i][j] != '\0'; j++) {
+                switch (argv[i][j]) {
+                    case 'a':
+                        *opt_a = 1;
+                        break;
+                    case 't':
+                        *opt_t = 1;
+                        break;
+                    default:
+                        fprintf(stderr, "Unknown option -%c\n", argv[i][j]);
+                        has_error = 1;  // mark an error
+                }
+            }
         } else {
-            // non-optional argument will be treated as a path
-            *path = argv[i];
+            if (**path != '.') {  // A path has already been set
+                fprintf(stderr, "Multiple directories not supported. Using first specified: %s\n", *path);
+                has_error = 1;  // mark an error
+            }
+            *path = argv[i];  // set path
         }
     }
+    return has_error; // return error status
 }
