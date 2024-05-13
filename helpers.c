@@ -28,21 +28,13 @@ char* str_cpy(char* dst, char* src) {
     return original_dst;
 }
 
-// strcmp helper
-int str_cmp(const char* param_1, const char* param_2) {
-    int i = 0, j = 0, param_1_sum = 0, param_2_sum = 0;
-    while (param_1[i] != '\0') {
-        param_1_sum += param_1[i];
-        i++;
+// strcmp helper - refactored
+int str_cmp(const char* s1, const char* s2) {
+    while (*s1 && (*s1 == *s2)) {
+        s1++;
+        s2++;
     }
-    while (param_2[j] != '\0') {
-        param_2_sum += param_2[j];
-        j++;
-    }
-    int diff = param_2_sum - param_1_sum;
-    if (diff < 0) return -1;
-    if (diff > 0) return 1;
-    return 0;
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
 }
 
 // sort helpers
@@ -68,12 +60,9 @@ int compare_by_mod_time(const void *a, const void *b) {
     file_entry *file_b = node_b->entry;
 
     // check seconds first
-    if (file_a->mod_time != file_b->mod_time) {
-        // sort from first_modified to last_modified
-        return (file_a->mod_time > file_b->mod_time) - (file_a->mod_time > file_b->mod_time);
-    }
-    // if the seconds are equal, look at the nsec values
-    return (file_a->mod_nsec > file_b->mod_nsec) - (file_a->mod_nsec > file_b->mod_nsec);
+    if (file_a->mod_time != file_b->mod_time)
+        return file_a->mod_time - file_b->mod_time;
+    return file_a->mod_nsec - file_b->mod_nsec; // compare nanoseconds
 }
 
 // merge sort helper: accepts the list, and nodes for storing front and back of the split list

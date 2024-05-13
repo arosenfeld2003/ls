@@ -5,6 +5,7 @@ void list_directory(const char *path, int opt_a, int opt_t) {
     if (dir == NULL) {
         char *err = "Failed to open directory\n";
         write(2, err, str_len(err));
+        return; // avoid further errors
     }
 
     struct dirent *dp;
@@ -20,12 +21,21 @@ void list_directory(const char *path, int opt_a, int opt_t) {
         if (lstat(full_path, &statbuf) == -1) continue;
 
         file_entry *f = malloc(sizeof(file_entry));
-        f->name = malloc(str_len(dp->d_name));
+        f->name = malloc(str_len(dp->d_name) + 1); // null terminator
+        if (f->name == NULL) {  // Check malloc success
+            free(f);
+            continue;
+        }
         str_cpy(f->name, dp->d_name);
         f->mod_time = MOD_TIME_SEC(statbuf); // seconds
         f->mod_nsec = MOD_TIME_NSEC(statbuf); // nanoseconds
 
         file_entry_node *new_node = malloc(sizeof(file_entry_node));
+        if (new_node == NULL) {  // Check malloc success
+            free(f->name);
+            free(f);
+            continue;
+        }
         new_node->entry = f;
         new_node->next = NULL;
 
@@ -34,8 +44,10 @@ void list_directory(const char *path, int opt_a, int opt_t) {
             head = new_node;
             current = new_node;
         } else {
-            current->next = new_node;
-            current = new_node;
+            if (current != NULL) {
+                current->next = new_node;
+                current = new_node;
+            }
         }
     }
 

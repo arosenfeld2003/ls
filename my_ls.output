@@ -1,0 +1,13 @@
+my_ls.output
+file_list.o
+file_list.h
+file_list.c
+ls.output
+helpers.o
+helpers.c
+Makefile
+README.md
+main.o
+main.c
+tests
+my_ls
