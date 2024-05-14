@@ -1,4 +1,5 @@
 #include "file_list.h"
+#include <stdio.h>
 
 // strlen helper
 int str_len(const char *str) {
@@ -127,37 +128,32 @@ void merge_sort(file_entry_node** headRef, int(*comp)(const void*, const void*))
     *headRef = merge_sorted_lists(a, b, comp);
 }
 
-// parse command line args for ls
-#include <stdio.h>
-
 // parse cli args
-int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char **path) {
+int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, int *path_count) {
     int has_error = 0; // error tracking
+    *path_count = 0; // initialize count of dir arguments at 0
+    *paths = malloc(argc * sizeof(char*)); // Allocate array for paths based on the number of arguments
+    // error check
+    if (*paths == NULL) {
+        fprintf(stderr, "Failed to allocate memory.\n");
+        return 1; // Memory allocation failure
+    }
 
     for (int i = 1; i < argc; i++) {
-        if (argv[i][0] == '-') {  // handle flags
-            for (int j = 1; argv[i][j] != '\0'; j++) {
-                switch (argv[i][j]) {
-                    case 'a':
-                        *opt_a = 1;
-                        break;
-                    case 't':
-                        *opt_t = 1;
-                        break;
-                    default:
-                        fprintf(stderr, "Unknown option -%c\n", argv[i][j]);
-                        has_error = 1;  // set error and continue
-                }
+        if (argv[i][0] == '-') {  // Handle flags
+            if (strcmp(argv[i], "-a") == 0) {
+                *opt_a = 1;
+            } else if (strcmp(argv[i], "-t") == 0) {
+                *opt_t = 1;
+            } else {
+                fprintf(stderr, "Unknown option %s\n", argv[i]);
+                has_error = 1;  // Mark error but continue parsing
             }
-        } else {
-            // Check if a path is already set
-            if (strcmp(*path, ".") != 0) {
-                fprintf(stderr, "Multiple directories not supported. Using first specified: %s\n", *path);
-                has_error = 1; // set error and continue
-            }
-            *path = argv[i];
-        }
+        } (*paths)[*path_count] = argv[i];
+        (*path_count)++;
     }
+
     return has_error; // return error status, 0 on success
 }
+
 
