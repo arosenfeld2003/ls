@@ -132,6 +132,7 @@ void merge_sort(file_entry_node** headRef, int(*comp)(const void*, const void*))
 int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, int *path_count) {
     int has_error = 0; // error tracking
     *path_count = 0; // initialize count of dir arguments at 0
+
     *paths = malloc(argc * sizeof(char*)); // Allocate array for paths based on the number of arguments
     // error check
     if (*paths == NULL) {
@@ -153,6 +154,12 @@ int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, in
             (*paths)[*path_count] = argv[i];
             (*path_count)++;
         }
+    }
+
+    // handle default path - no user path input
+    if (*path_count == 0) {
+        (*paths)[*path_count] = ".";
+        (*path_count)++;
     }
 
     return has_error; // return error status, 0 on success
