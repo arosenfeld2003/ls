@@ -149,8 +149,10 @@ int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, in
                 fprintf(stderr, "Unknown option %s\n", argv[i]);
                 has_error = 1;  // Mark error but continue parsing
             }
-        } (*paths)[*path_count] = argv[i];
-        (*path_count)++;
+        } else {
+            (*paths)[*path_count] = argv[i];
+            (*path_count)++;
+        }
     }
 
     return has_error; // return error status, 0 on success
