@@ -11,6 +11,9 @@ int main(int argc, char **argv) {
         return 1; // Exit if there was an error parsing args
     }
 
+    // Sort paths to ensure correct order
+    sort_paths(paths, path_count);
+
     for (int i = 0; i < path_count; i++) {
         if (path_count > 1) {
             printf("%s:\n", paths[i]);

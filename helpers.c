@@ -73,7 +73,8 @@ int compare_by_mod_time(const void *a, const void *b) {
         return 1;
     }
 
-    return 0;  // only if times are exactly the same
+    // If nanoseconds are exactly the same, fallback to lexicographical order
+    return strcmp(file_a->name, file_b->name);
 }
 
 // merge sort helper: accepts the list, and nodes for storing front and back of the split list
@@ -152,13 +153,18 @@ int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, in
 
     for (int i = 1; i < argc; i++) {
         if (argv[i][0] == '-') {  // Handle flags
-            if (strcmp(argv[i], "-a") == 0) {
-                *opt_a = 1;
-            } else if (strcmp(argv[i], "-t") == 0) {
-                *opt_t = 1;
-            } else {
-                fprintf(stderr, "Unknown option %s\n", argv[i]);
-                has_error = 1;  // Mark error but continue parsing
+            // iterate argv flags and set them
+            int j = 1;
+            while (argv[i][j]) {
+                if (argv[i][j] == 'a') {
+                    *opt_a = 1;
+                } else if (argv[i][j] == 't') {
+                    *opt_t = 1;
+                } else {
+                    fprintf(stderr, "Unknown option %s\n", argv[i]);
+                    has_error = 1;  // Mark error but continue parsing
+                }
+                j += 1;
             }
         } else {
             (*paths)[*path_count] = argv[i];
@@ -175,12 +181,37 @@ int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, in
     return has_error; // return error status, 0 on success
 }
 
-// helper function to debug printing file mod times
-void print_file_times(const char *filename) {
-    struct stat statbuf;
-    if (lstat(filename, &statbuf) == -1) {
-        perror("Failed to get file stats");
-        return;
+// current directory (.) then root directory ('/') should always be listed first
+void sort_paths(char **paths, int path_count) {
+    for (int i = 0; i < path_count; i++) {
+        if (str_cmp(paths[i], ".") == 0) {
+            // Move current directory (.) to the beginning
+            for (int j = i; j > 0; j--) {
+                char *temp = paths[j];
+                paths[j] = paths[j-1];
+                paths[j-1] = temp;
+            }
+        }
     }
-    printf("File: %s, Time: %ld.%d\n", filename, MOD_TIME_SEC(statbuf), MOD_TIME_NSEC(statbuf));
+    for (int i = 0; i < path_count; i++) {
+        if (str_cmp(paths[i], "/") == 0) {
+            // Move root directory (/) to the second position
+            for (int j = i; j > 1; j--) {
+                char *temp = paths[j];
+                paths[j] = paths[j-1];
+                paths[j-1] = temp;
+            }
+        }
+    }
 }
+
+
+// helper function to debug printing file mod times
+// void print_file_times(const char *filename) {
+//     struct stat statbuf;
+//     if (lstat(filename, &statbuf) == -1) {
+//         perror("Failed to get file stats");
+//         return;
+//     }
+//     printf("File: %s, Time: %ld.%ld\n", filename, MOD_TIME_SEC(statbuf), MOD_TIME_NSEC(statbuf));
+// }

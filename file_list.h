@@ -46,8 +46,9 @@ void merge_sort(file_entry_node **headRef, int(*comp)(const void*, const void*))
 void **merge(file_entry_node **left, int left_count, file_entry **right, int right_count, int (*comp)(const void*, const void*));
 int compare_by_mod_time(const void *a, const void *b);
 int compare_by_name(const void *a, const void *b);
-//file_entry_node *add_to_list(file_entry_node *head, file_entry *new_entry);
-void print_file_times(const char *filename);
+void sort_paths(char **paths, int path_count);
+// file_entry_node *add_to_list(file_entry_node *head, file_entry *new_entry);
+// void print_file_times(const char *filename);
 
 #endif
 
