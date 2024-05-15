@@ -47,6 +47,7 @@ void **merge(file_entry_node **left, int left_count, file_entry **right, int rig
 int compare_by_mod_time(const void *a, const void *b);
 int compare_by_name(const void *a, const void *b);
 //file_entry_node *add_to_list(file_entry_node *head, file_entry *new_entry);
+void print_file_times(const char *filename);
 
 #endif
 

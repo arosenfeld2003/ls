@@ -56,14 +56,24 @@ int compare_by_mod_time(const void *a, const void *b) {
     const file_entry_node *node_a = a;
     const file_entry_node *node_b = b;
 
-    // the entry field of each node is the struct containing the pathname
-    file_entry *file_a = node_a->entry;
-    file_entry *file_b = node_b->entry;
+    const file_entry *file_a = node_a->entry;
+    const file_entry *file_b = node_b->entry;
 
-    // check seconds first
-    if (file_a->mod_time != file_b->mod_time)
-        return file_a->mod_time - file_b->mod_time;
-    return file_a->mod_nsec - file_b->mod_nsec; // compare nanoseconds
+    // Check modification time in seconds
+    if (file_a->mod_time > file_b->mod_time) {
+        return -1;  // More recent file first
+    } else if (file_a->mod_time < file_b->mod_time) {
+        return 1;
+    }
+
+    // If modification time in seconds is the same, compare nanoseconds
+    if (file_a->mod_nsec > file_b->mod_nsec) {
+        return -1;
+    } else if (file_a->mod_nsec < file_b->mod_nsec) {
+        return 1;
+    }
+
+    return 0;  // only if times are exactly the same
 }
 
 // merge sort helper: accepts the list, and nodes for storing front and back of the split list
@@ -165,4 +175,12 @@ int parse_args(int argc, char *argv[], int *opt_a, int *opt_t, char ***paths, in
     return has_error; // return error status, 0 on success
 }
 
-
+// helper function to debug printing file mod times
+void print_file_times(const char *filename) {
+    struct stat statbuf;
+    if (lstat(filename, &statbuf) == -1) {
+        perror("Failed to get file stats");
+        return;
+    }
+    printf("File: %s, Time: %ld.%d\n", filename, MOD_TIME_SEC(statbuf), MOD_TIME_NSEC(statbuf));
+}

@@ -27,6 +27,8 @@ void list_directory(const char *path, int opt_a, int opt_t) {
             continue;
         }
         str_cpy(f->name, dp->d_name);
+        // check mod_time
+        print_file_times(f->name);
         f->mod_time = MOD_TIME_SEC(statbuf); // seconds
         f->mod_nsec = MOD_TIME_NSEC(statbuf); // nanoseconds
 
